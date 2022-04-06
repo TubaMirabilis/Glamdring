@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: glamdring-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: glamdring
+  ports:
+  - port: 80
+    targetPort: 80

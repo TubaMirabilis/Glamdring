@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: glamdring-deployment
+spec:
+  selector:
+    matchLabels:
+      app: glamdring
+  template:
+    metadata:
+      labels:
+        app: glamdring
+    spec:
+      containers:
+      - name: glamdring
+        image: tubamirabilis/glamdring:v2
+        resources:
+          limits:
+            memory: "64Mi"
+            cpu: "50m"
+        ports:
+        - containerPort: 80
+        env:
+          - name: MongoDbSettings__Host
+            value: mongodb-service
+          - name: MongodbSettings__Password
+            valueFrom:
+              secretKeyRef:
+                name: glamdring-secrets
+                key: mongodb-password
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: 80
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 80
